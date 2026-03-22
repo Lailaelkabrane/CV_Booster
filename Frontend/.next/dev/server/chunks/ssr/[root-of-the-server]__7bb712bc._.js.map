@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 18, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/gameg/Downloads/CV-Booster%28ATS%20Score%29/Frontend/app/cv_booster/page.tsx"],"sourcesContent":["import CVBoosterApp from \"./components/CVBoosterApp\";\r\n\r\nexport default function CvBoosterPage() {\r\n  return <CVBoosterApp />;\r\n}"],"names":[],"mappings":";;;;;;;;;;;;AAEe,SAAS;IACtB,qBAAO,8OAAC;;;;;AACV"}}]
+}

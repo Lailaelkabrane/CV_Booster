@@ -1,0 +1,15 @@
+fastapi
+uvicorn
+openai
+python-dotenv
+python-multipart
+pdfplumber
+python-docx
+pymupdf
+sentence-transformers
+azure-cosmos
+pydantic
+numpy
+scikit-learn
+torch
+transformers
