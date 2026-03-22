@@ -7,7 +7,7 @@ log = logging.getLogger("cv_booster")
 DB_HOST     = os.getenv("AZURE_HOST",     "c-shared-db-cluster.6uhq2s7lsktnhd.postgres.cosmos.azure.com")
 DB_NAME     = os.getenv("AZURE_DB",       "shared-db")
 DB_USER     = os.getenv("AZURE_USER",     "citus")
-DB_PASSWORD = os.getenv("AZURE_PASSWORD", "Adminshareddb123")
+DB_PASSWORD = os.getenv("AZURE_PASSWORD")
 DB_PORT     = int(os.getenv("AZURE_PORT", "5432"))
 
 # No more fake demo data — every status has a clear meaning
