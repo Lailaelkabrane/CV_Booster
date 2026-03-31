@@ -70,9 +70,18 @@ EXTRACTION RULES — read carefully:
    - Only include categories that have actual skills
    - Example: {{"programming": ["Python", "SQL", "Java"], "cloud_devops": ["Docker", "AWS", "CI/CD"]}}
 
-5. SUMMARY — copy the professional summary verbatim if present. null if not found.
+5. EXPERIENCE — JSON array of ALL work/internship entries. Look for ANY of these section names:
+   "Experience", "Expérience", "Expérience professionnelle", "Work Experience",
+   "Professional Experience", "Employment", "Internship", "Stage", "Stages",
+   "Parcours professionnel", "Career History", "Work History".
+   Each entry: {{"title": "job title", "company": "company name", "start": "month/year or year", "end": "month/year, year, or Present", "description": "responsibilities or empty string"}}
+   - Extract EVERY job and internship listed.
+   - If start/end not found, use empty string "".
+   - If there is truly no experience section, return [].
 
-6. EMPTY FIELDS — use null (not empty string "") for missing values.
+6. SUMMARY — copy the professional summary verbatim if present. null if not found.
+
+7. EMPTY FIELDS — use null (not empty string "") for missing values.
 
 Return ONLY valid JSON, no markdown, no explanation:
 {{
@@ -88,6 +97,7 @@ Return ONLY valid JSON, no markdown, no explanation:
   "summary": "professional summary verbatim or null",
   "skills": {{}},
   "education": [],
+  "experience": [],
   "certifications": [],
   "projects": []
 }}
@@ -161,17 +171,35 @@ CV TEXT:
     # ── Normalize skills: ensure dict of lists ────────────────────────────────
     skills = parsed.get("skills", {})
     if isinstance(skills, str):
-        # Legacy: comma-separated string → put in generic category
         skill_list = [s.strip() for s in skills.split(",") if s.strip()]
         parsed["skills"] = {"technical": skill_list} if skill_list else {}
     elif isinstance(skills, list):
-        # List of strings → put in generic category
         parsed["skills"] = {"technical": [s for s in skills if s]} if skills else {}
     elif isinstance(skills, dict):
-        # Remove empty categories
         parsed["skills"] = {k: v for k, v in skills.items() if isinstance(v, list) and v}
     else:
         parsed["skills"] = {}
+
+    # ── Normalize experience: ensure list of dicts ────────────────────────────
+    experience = parsed.get("experience", [])
+    if isinstance(experience, str):
+        parsed["experience"] = [{"title": experience.strip(), "company": "", "start": "", "end": "", "description": ""}] if experience.strip() else []
+    elif isinstance(experience, list):
+        normalized = []
+        for e in experience:
+            if isinstance(e, dict) and (e.get("title") or e.get("company")):
+                normalized.append({
+                    "title":       e.get("title", "").strip(),
+                    "company":     e.get("company", "").strip(),
+                    "start":       e.get("start", "").strip(),
+                    "end":         e.get("end", "").strip(),
+                    "description": e.get("description", "").strip(),
+                })
+            elif isinstance(e, str) and e.strip():
+                normalized.append({"title": e.strip(), "company": "", "start": "", "end": "", "description": ""})
+        parsed["experience"] = normalized
+    else:
+        parsed["experience"] = []
 
     return parsed
 
@@ -254,7 +282,10 @@ def _build_cosmos_doc(
     # ── Extra data (user-filled missing sections) ────────────────────────────
     languages  = extra_data.get("languages", [])
     education  = extra_data.get("education", [])
-    experience = extra_data.get("experience", [])
+    # Prefer user-filled experience; fall back to LLM-extracted from CV, then existing DB value
+    experience = (extra_data.get("experience") or
+                  cv_structured.get("experience") or
+                  existing.get("experience_entries", []))
 
     # ── Quiz ────────────────────────────────────────────────────────────────
     quiz_domain = (quiz_data or {}).get("domain", domain)

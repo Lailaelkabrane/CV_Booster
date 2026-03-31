@@ -258,7 +258,7 @@ _DOMAIN_KW_CACHE: dict[str, list[str]] = {}
 SECTION_HEADERS_RE = {
     "profile":        re.compile(r"^(profile|profil|about|objective|summary|résumé|resume|présentation|professional summary|about me|career objective|personal statement|à propos)$", re.I),
     "education":      re.compile(r"^(education|formation|éducation|études|academic|diplômes?|qualifications?|academic background|educational background|studies|parcours académique|parcours scolaire)$", re.I),
-    "experience":     re.compile(r"^(experience|expérience|expérience professionnelle|professional experience|work experience|work history|employment|employment history|career history|internships?|stage|stages?|parcours professionnel)$", re.I),
+    "experience":     re.compile(r"^(experience|expérience|expériences?|expérience professionnelle|professional experience|work experience|work history|employment|employment history|career history|internship|internships?|stage|stages?|parcours professionnel|parcours|mon parcours)$", re.I),
     "skills":         re.compile(r"^(skills?|technical skills?|compétences?|compétences techniques|technologies|core skills?|key skills?|expertise|technical expertise|hard skills|soft skills)$", re.I),
     "projects":       re.compile(r"^(projects?|academic projects?|projets?|portfolio|personal projects?|side projects?|notable projects?|réalisations?)$", re.I),
     "certifications": re.compile(r"^(certif\w*|badges?|awards?|achievements?|training|licenses?|courses?|formations? complémentaires?)$", re.I),
